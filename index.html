@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Lina - Smooth Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --env-pink: #ffafcc;
+            --flap-white: #ffffff;
+            --deep-rose: #ff5c8d;
+            --gold-text: linear-gradient(to right, #c5a059, #e6c884, #c5a059);
+            --vintage-bg: #fdf6e3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #fff0f5;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Amiri', serif;
+        }
+
+        /* تحسين أداء القلوب */
+        .heart-rain {
+            position: absolute; top: -50px; pointer-events: none; z-index: 1000;
+            animation: rainFall linear forwards;
+            will-change: transform; /* يسرع الأداء */
+        }
+        @keyframes rainFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .envelope-container {
+            position: relative; width: 320px; height: 220px;
+            cursor: pointer; z-index: 10;
+        }
+        .env-body { position: absolute; inset: 0; background: var(--env-pink); border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 2; }
+        
+        .env-text {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem; color: #fff; z-index: 5;
+            text-shadow: 0 0 8px #ff1493; pointer-events: none;
+        }
+
+        .env-flap { position: absolute; top: 0; width: 100%; height: 100%; background: var(--flap-white); clip-path: polygon(0 0, 100% 0, 50% 55%); border-radius: 6px; transform-origin: top; transition: transform 0.6s ease; z-index: 4; }
+        .opened .env-flap { transform: rotateX(180deg); }
+        .env-pocket { position: absolute; bottom: 0; width: 100%; height: 100%; background: var(--env-pink); clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%); z-index: 3; }
+        .seal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -45%); width: 45px; z-index: 5; transition: 0.3s; }
+        .opened .seal { opacity: 0; transform: scale(0); }
+
+        .vintage-paper {
+            position: fixed; top: 50%; left: 50%;
+            width: min(92vw, 380px);
+            background-color: var(--vintage-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' opacity='0.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 35px 20px;
+            border-radius: 4px;
+            z-index: 100;
+            visibility: hidden; opacity: 0;
+            transform: translate(-50%, -45%) scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            border: 2px solid #1a1a1a;
+            text-align: center;
+            max-height: 85vh; overflow-y: auto;
+            will-change: transform, opacity;
+        }
+
+        .vintage-paper.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+        .poem-content { font-size: 1.1rem; line-height: 1.7; color: #2c1e11; font-weight: 700; white-space: pre-line; margin-bottom: 15px; }
+        .poem-footer { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(44, 30, 17, 0.2); font-size: 1.25rem; color: #6d2d2d; font-weight: 800; }
+
+        .song-gold { font-family: 'Great Vibes', cursive; font-size: 1.6rem; background: var(--gold-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
+
+        .play-wrapper { position: relative; display: inline-block; margin-top: 10px; }
+        .play-btn { width: 55px; height: 55px; background: #fff; border-radius: 50%; border: 1px solid #e3d5b0; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .play-btn svg { width: 18px; fill: var(--deep-rose); }
+        
+        .pulse-wave { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--deep-rose); opacity: 0; }
+        .playing .pulse-wave { animation: sonarWave 2s infinite; }
+        @keyframes sonarWave { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; transition: 0.4s; z-index: 50; }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .close-x { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; color: #1a1a1a; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="envelope-container" id="envBtn">
+        <div class="env-text">To Lina</div>
+        <div class="env-body"></div>
+        <div class="env-flap"></div>
+        <div class="env-pocket"></div>
+        <div class="seal">
+            <svg viewBox="0 0 24 24" fill="#ff5c8d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+    </div>
+
+    <div class="vintage-paper" id="paper">
+        <span class="close-x" onclick="closeAll()">×</span>
+        <div class="poem-content">
+            لَكِ الودُّ مَختومٌ بِقلبي ومُسْنَدُ
+            وعهدٌ على كَرِّ الزَّمانِ يُجَدَّدُ
+            وما الحُبُّ إلا أن تَراكِ بَصِيرَتي
+            مَلاذاً إذا جارَ الزَّمانُ يُقَصَّدُ
+            رَفيقَةَ دَربي، هَل لِطِيبِكِ مَثِيلٌ؟
+            وفي مَحضَرِ الطُّهرِ البَيانُ يُقَيَّدُ
+            أتاني أوانُ العِيدِ يَسألُ عَن لِقَا
+            فَقُلتُ: لَها كُلُّ المَحامِدِ تُسْرَدُ
+            فَلا الحُبُّ مَحصُورٌ بِيومٍ وإنَّما
+            وُجودُكِ في عُمري هُوَ العِيدُ سَيِّدُ
+            عَظُمتِ مَقاماً في فُؤادي ورِفْعَةً
+            فَأنتِ الوَفاءُ الـمُستَقِيمُ الـمُخَلَّدُ
+
+            <div class="poem-footer">
+                كُلُّ عامٍ وحُبُّكِ العِيدُ يَهنو
+                في فؤادي، وسَعدُنا مَشهودُ
+            </div>
+        </div>
+
+        <div class="play-wrapper" id="audioWrap">
+            <div class="pulse-wave"></div>
+            <button class="play-btn" id="playBtn">
+                <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+        </div>
+
+        <div class="song-gold">High School Sweetheart</div>
+        <p style="font-family: 'Montserrat'; font-size: 0.7rem; color: #8b7e66; margin-top: 5px;">Melanie Martinez</p>
+    </div>
+
+    <audio id="audio" src="https://foldr.space/api/view/t3N7rUSjSzVgonc1/TFNYzF9OiOXFfkdGJxZe%2B4Vn8vAkF_pg%20(1).m4a" preload="auto"></audio>
+
+    <script>
+        const env = document.getElementById('envBtn');
+        const paper = document.getElementById('paper');
+        const overlay = document.getElementById('overlay');
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const audioWrap = document.getElementById('audioWrap');
+        const icon = document.getElementById('icon');
+
+        env.addEventListener('click', () => {
+            env.classList.add('opened');
+            setTimeout(() => {
+                overlay.classList.add('active');
+                paper.classList.add('active');
+                audio.play().catch(e => console.log("Auto-play wait"));
+                if(!audio.paused) {
+                    audioWrap.classList.add('playing');
+                    icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                }
+                startRain(); 
+            }, 600);
+        });
+
+        function closeAll() {
+            paper.classList.remove('active');
+            overlay.classList.remove('active');
+            setTimeout(() => env.classList.remove('opened'), 400);
+            audio.pause();
+            audioWrap.classList.remove('playing');
+        }
+
+        overlay.addEventListener('click', closeAll);
+
+        playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (audio.paused) {
+                audio.play();
+                audioWrap.classList.add('playing');
+                icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+            } else {
+                audio.pause();
+                audioWrap.classList.remove('playing');
+                icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            }
+        });
+
+        function startRain() {
+            const rainInterval = setInterval(() => {
+                if(!paper.classList.contains('active')) {
+                    clearInterval(rainInterval);
+                    return;
+                }
+                const h = document.createElement('div');
+                h.className = 'heart-rain';
+                const colors = ['#ff5c8d', '#ffafcc', '#e3d5b0']; 
+                h.innerHTML = `<svg width="${Math.random()*15+15}" viewBox="0 0 24 24" fill="${colors[Math.floor(Math.random()*3)]}" opacity="0.6"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 5000);
+            }, 400); // كثافة أقل لتقليل اللاك
+        }
+    </script>
+</body>
+</html>
